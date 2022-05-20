@@ -20,14 +20,16 @@ def handle_client(conn, addr): # Happens concurrently
 
     connected = True
     while connected:
-        msg_length = conn.recv(HEADER).decode(FORMAT)  # Waits till it receives message from client, using header as the byte size. Deconde from byte format to string.
-        msg_length = int(msg_length)
-        msg = conn.recv(msg_length).decode(FORMAT) # This is the actual message of length, msg_length.
+        msg_length = conn.recv(HEADER).decode(FORMAT)  # Waits till it receives message from client, using header as the byte size. Deconde from byte format to string.\
+        if msg_length:
+            msg_length = int(msg_length)
+            msg = conn.recv(msg_length).decode(FORMAT) # This is the actual message of length, msg_length.
 
-        if msg == DISCONNECT_MESSAGE:
-            connected = False
+            if msg == DISCONNECT_MESSAGE:
+                connected = False
 
-        print(f"[{addr}] {msg}")
+            print(f"[{addr}] {msg}")
+            conn.send("Msg received".encode(FORMAT)) # Send back this message to clients.
 
     conn.close()
 
